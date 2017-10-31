@@ -1,0 +1,5 @@
+2.12 4
+ab => $eps$
+ba => $eps$
+aa => a
+bb => b

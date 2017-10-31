@@ -1,0 +1,7 @@
+min 6
+*| => |*
+|min| => min*
+min| => min
+|min => min
+min => $eps$
+* => |

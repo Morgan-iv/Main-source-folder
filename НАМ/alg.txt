@@ -1,0 +1,16 @@
+2.53 15
+ax => x
+bx => x
+x |> $eps$
+*aa => a*a
+*ab => b*a
+*ba => a*b
+*bb => b*b
+a*a => $eps$
+b*b => $eps$
+a*b => x
+b*a => x
+*a |> a
+*b |> a
+* |> a
+$eps$ => *

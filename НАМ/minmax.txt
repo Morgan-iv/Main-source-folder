@@ -1,0 +1,9 @@
+minmax 8
+*| => |*
+|min| => min*
+min| => min
+|min => min
+min => $eps$
+|max| => max*
+max => $eps$
+* => |
