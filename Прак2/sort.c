@@ -67,6 +67,23 @@ int strcmp(const char * str1, const char * str2, int f)
 	return 0;
 }
 
+char * fgets(FILE * stream)
+{
+	char * str;
+	int ptr = 0, count = 1000;
+	str = malloc(count + 1);
+	*str = 0;
+	while (fgets(str + ptr, count + 1, stream) && strlen(str + ptr) == count - ptr && str[count - 1] != '\n')
+		ptr = count, count <<= 1, str = realloc(str, count + 1);
+	if (!(*str)) free(str), str = NULL;
+	return str;
+}
+
+int sortfile(const char * inp, const char * out, const char * tmp1, const char * tmp2)
+{
+	
+}
+
 int main(int argc, char * argv[])
 {
 	uint iter, count = 0, i, j, n, k, c;
