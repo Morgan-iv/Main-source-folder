@@ -67,57 +67,49 @@ int strcmp(const char * str1, const char * str2, int f)
 	return 0;
 }
 
-char * fgets(FILE * stream)
+char * mfgets(char ** str, uint * count, FILE * stream)
 {
-	char * str;
-	int ptr = 0, count = 1000;
-	str = malloc(count + 1);
-	*str = 0;
-	while (fgets(str + ptr, count + 1, stream) && strlen(str + ptr) == count - ptr && str[count - 1] != '\n')
-		ptr = count, count <<= 1, str = realloc(str, count + 1);
-	if (!(*str)) free(str), str = NULL;
-	return str;
+	int ptr = 0;
+	*(*str) = 0;
+	while (fgets((*str) + ptr, *count + 1, stream) && strlen((*str) + ptr) == *count - ptr && (*str)[*count - 1] != '\n')
+		ptr = *count, *count <<= 1, (*str) = realloc((*str), *count + 1);
+	if (!(*(*str))) return NULL;
+	return (*str);
 }
 
-int sortfile(const char * inp, const char * out, const char * tmp1, const char * tmp2)
+int sortfile(const char * inp, const char * out, const char * tmp1, const char * tmp2, int f)
 {
-	
-}
-
-int main(int argc, char * argv[])
-{
-	uint iter, count = 0, i, j, n, k, c;
-	FILE * input;
-	FILE * output;
+	uint iter, count = 0, i, j, n, k, c, len;
+	FILE * input, * output;
 	FILE * merge[2];
-	char str1[10002];
-	char str2[10002];
-	char outfilename[2][257];
-	int choose, reg, tmp;
+	char * str1, * str2;
+	int choose;
 	//---------------------------------------------------
-	if (argc == 1) return 0;
-	outfilename = ".tmpoutsum";
 	
-	iter = 1;
-	while (*(argv[iter]) == '-')
-	{
-		
-	}
-	input = fopen("input.txt", "r")
-	output = fopen("output1.txt", "w");
-	merge[0] = fopen(".tmp1", "w");
-	merge[1] = fopen(".tmp2", "w");
 	
-	while (fgets(str1, 10001, input))
+	len = 1000;
+	str1 = malloc(len + 1);
+	input =  fopen(inp, "r")
+	output = fopen(out, "w");
+	merge[0] = fopen(tmp1, "w");
+	merge[1] = fopen(tmp2, "w");
+	
+	
+	while (mfgets(&str1, &len, input))
 	{
 		fputs(str1, merge[count++ & 1]);
 	}
 	fputc('\n', merge[!(count & 1)]);
+	
+	
 	fclose(input);
 	fclose(merge[0]);
 	fclose(merge[1]);
-	merge[0] = fopen(".tmp1", "r");
-	merge[1] = fopen(".tmp2", "r");
+	merge[0] = fopen(tmp1, "r");
+	merge[1] = fopen(tmp2, "r");
+	str2 = malloc(len + 1);
+	
+	
 	for (iter = 0; (count - 1) >> iter > 0; ++iter)
 	{
 		n = (1 << iter);
@@ -125,22 +117,22 @@ int main(int argc, char * argv[])
 		for (c = 0; c < k; ++c)
 		{
 			for (i = 0, j = 0,
-				fgets(str1, 10001, merge[0]),
-				fgets(str2, 10001, merge[1]);
+				fgets(str1, len, merge[0]),
+				fgets(str2, len, merge[1]);
 				i < n && j < n;)
 			{
-				choose = strcmp(str1, str2);
+				choose = strcmp(str1, str2, f);
 				if (choose < 0)
 				{
 					fputs(str1, output);
 					++i;
-					if (i < n) fgets(str1, 10001, merge[0]);
+					if (i < n) fgets(str1, len, merge[0]);
 				}
 				else
 				{
 					fputs(str2, output);
 					++j;
-					if (j < n) fgets(str2, 10001, merge[1]);
+					if (j < n) fgets(str2, len, merge[1]);
 				}
 			}
 			if (i < n)
@@ -148,7 +140,7 @@ int main(int argc, char * argv[])
 				fputs(str1, output);
 				for (++i; i < n; ++i)
 				{
-					fgets(str1, 10001, merge[0]);
+					fgets(str1, len, merge[0]);
 					fputs(str1, output);
 				}
 			}
@@ -157,11 +149,13 @@ int main(int argc, char * argv[])
 				fputs(str2, output);
 				for (++j; j < n; ++j)
 				{
-					fgets(str2, 10001, merge[1]);
+					fgets(str2, len, merge[1]);
 					fputs(str2, output);
 				}
 			}
 		}
+		
+		
 		k = count & ((1 << iter) - 1);
 		c = count & (1 << iter);
 		if (!(c && k))
@@ -169,29 +163,31 @@ int main(int argc, char * argv[])
 			c += k;
 			for (i = 0; i < c; ++i)
 			{
-				fgets(str1, 10001, merge[0]);
+				fgets(str1, len, merge[0]);
 				fputs(str1, output);
 			}
 		}
+		
+		
 		else
 		{
 			for (i = 0, j = 0,
-				fgets(str1, 10001, merge[0]),
-				fgets(str2, 10001, merge[1]);
+				fgets(str1, len, merge[0]),
+				fgets(str2, len, merge[1]);
 				i < n && j < k;)
 			{
-				choose = strcmp(str1, str2);
+				choose = strcmp(str1, str2, f);
 				if (choose < 0)
 				{
 					fputs(str1, output);
 					++i;
-					if (i < n) fgets(str1, 10001, merge[0]);
+					if (i < n) fgets(str1, len, merge[0]);
 				}
 				else
 				{
 					fputs(str2, output);
 					++j;
-					if (j < k) fgets(str2, 10001, merge[1]);
+					if (j < k) fgets(str2, len, merge[1]);
 				}
 			}
 			if (i < n)
@@ -199,7 +195,7 @@ int main(int argc, char * argv[])
 				fputs(str1, output);
 				for (++i; i < n; ++i)
 				{
-					fgets(str1, 10001, merge[0]);
+					fgets(str1, len, merge[0]);
 					fputs(str1, output);
 				}
 			}
@@ -208,46 +204,141 @@ int main(int argc, char * argv[])
 				fputs(str2, output);
 				for (++j; j < k; ++j)
 				{
-					fgets(str2, 10001, merge[1]);
+					fgets(str2, len, merge[1]);
 					fputs(str2, output);
 				}
 			}
 		}
+		
+		
 		fclose(output);
 		fclose(merge[0]);
 		fclose(merge[1]);
 		if ((count - 1) >> iter == 1)
 			break;
-		output = fopen("output1.txt", "r");
-		merge[0] = fopen(".tmp1", "w");
-		merge[1] = fopen(".tmp2", "w");
+		output = fopen(out, "r");
+		merge[0] = fopen(tmp1, "w");
+		merge[1] = fopen(tmp2, "w");
 		k = ((count - 1) / (n <<= 1)) + 1;
+		
+		
 		for (c = 0; c < k; ++c)
 		{
 			i = 0;
-			while (i++ < n && fgets(str1, 10001, output))
+			while (i++ < n && fgets(str1, len, output))
 			{
 				fputs(str1, merge[c & 1]);
 			}
 		}
+		
+		
 		fclose(output);
 		fclose(merge[0]);
 		fclose(merge[1]);
-		output = fopen("output1.txt", "w");
-		merge[0] = fopen(".tmp1", "r");
-		merge[1] = fopen(".tmp2", "r");
+		output = fopen(out, "w");
+		merge[0] = fopen(tmp1, "r");
+		merge[1] = fopen(tmp2, "r");
 	}
-	input = fopen("output1.txt", "r");
-	output = fopen("output.txt", "w");
-	for (i = 1; i < count; ++i)
+	free(str1);
+	free(str2);
+	return (int)count;
+}
+
+int mergefiles(const char * in1, const char * in2, const char * out, int f, int bn)
+{
+	uint len1, len2;
+	char * str1, * str2, * tmp1, * tmp2;
+	FILE * input1, * input2, * output;
+	int choose;
+	
+	len1 = len2 = 1000;
+	str1 = malloc(len1 + 1);
+	str2 = malloc(len2 + 1);
+	input1 = fopen(in1, "r");
+	input2 = fopen(in2, "r");
+	output = fopen(out, "w");
+	tmp1 = mfgets(&str1, &len1, input1);
+	tmp2 = mfgets(&str2, &len2, input2);
+	
+	
+	while (tmp1 && tmp2)
 	{
-		fgets(str1, 10001, input);
-		fputs(str1, output);
+		choose = strcmp(str1, str2, f);
+		if (choose < 0)
+		{
+			fputs(str1, output);
+			tmp1 = mfgets(&str1, &len1, input1);
+		}
+		else
+		{
+			fputs(str2, output);
+			tmp2 = mfgets(&str2, &len2, input2);
+		}
 	}
-	fgets(str1, 10001, input);
-	str1[strlen(str1) - 1] = '\0';
-	fputs(str1, output);
-	fclose(output);
-	fclose(input);
+	
+	if (!tmp1)
+	{
+		if (bn && tmp2) str2[strlen(str2) - 1] = 0;
+		if (tmp2) fputs(str2, output);
+		while(mfgets(&str2, &len2, input2))
+		{
+			if (bn)
+			{
+				str2[strlen(str2) - 1] = 0;
+				fputc('\n', output)
+			}
+			fputs(str2, output);
+		}
+		tmp2 = NULL;
+	}
+		
+	if (!tmp2)
+	{
+		if (bn && tmp1) str1[strlen(str1) - 1] = 0;
+		if (tmp1) fputs(str1, output);
+		while(mfgets(&str1, &len1, input1))
+		{
+			if (bn)
+			{
+				str1[strlen(str1) - 1] = 0;
+				fputc('\n', output)
+			}
+			fputs(str1, output);
+		}
+		tmp1 = NULL;
+	}
+	free(str1);
+	free(str2);
 	return 0;
+}
+
+int check (const char * filename)
+{
+	uint len1, len2, t;
+	FILE * file;
+	char * str1, * str2, * tmp;
+	int res;
+	
+	len1 = len2 = 1000;
+	str1 = malloc(len1 + 1);
+	str2 = malloc(len2 + 1);
+	file = fopen(filename, "r");
+	
+	tmp = mfgets(&str1, &len1, file);
+	if (!tmp) return 0;
+	
+	while(mfgets(&str2, &len2, file))
+	{
+		if(strcmp(str1, str2) > 0) return 1;
+		tmp = str1, str1 = str2, str2 = tmp;
+		t = len1, len1 = len2, len2 = t;
+	}
+	
+	return 0;
+}
+
+int main(int argc, char * argv[])
+{
+	
+	
 }
