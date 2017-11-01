@@ -27,7 +27,7 @@ int strcmp(const char * str1, const char * str2, int f)
 		i = 0;
 		while (str1[i] != 0 && str2[i] != 0 && (str1[i] == str2[i] ||
 			  (M_IN(str1[i], 'A', 'Z') && M_IN(str2[i], 'a', 'z') && (str1[i] - 'A' == str2[i] - 'a')) ||
-			  (M_IN(str1[i], 'a', 'z') && M_IN(str2[i], 'A', 'Z') && (str1[i] - 'a' == str2[i] - 'Z'))))
+			  (M_IN(str1[i], 'a', 'z') && M_IN(str2[i], 'A', 'Z') && (str1[i] - 'a' == str2[i] - 'A'))))
 			  ++i;
 		return str1[i] - ((int) str2[i]);
 	}
@@ -129,7 +129,7 @@ int sortfile(const char * inp, const char * out, const char * tmp1, const char *
 				i < n && j < n;)
 			{
 				choose = strcmp(str1, str2, f);
-				if (choose < 0)
+				if (choose <= 0)
 				{
 					fputs(str1, output); //-V575
 					++i;
@@ -184,7 +184,7 @@ int sortfile(const char * inp, const char * out, const char * tmp1, const char *
 				i < n && j < k;)
 			{
 				choose = strcmp(str1, str2, f);
-				if (choose < 0)
+				if (choose <= 0)
 				{
 					fputs(str1, output);
 					++i;
@@ -273,7 +273,7 @@ int mergefiles(const char * in1, const char * in2, const char * out, int f, int 
 	while (tmp1 && tmp2)
 	{
 		choose = strcmp(str1, str2, f);
-		if (choose < 0)
+		if (choose <= 0)
 		{
 			fputs(str1, output); //-V575
 			tmp1 = mfgets(&str1, &len1, input1);
@@ -371,11 +371,12 @@ int main(int argc, char * argv[])
 	*output = 0;
 	iter = 1;
 	f = 0;
+	o = 0;
 	while (*(argv[iter]) == '-')
 	{
 		if (argv[iter][1] == 'c') f = 2;
-		if (argv[iter][1] == 'n') f = 1;
-		if (argv[iter][1] == 'f') f = (f) ? f : -1;
+		if (argv[iter][1] == 'n') f = -1;
+		if (argv[iter][1] == 'f') f = (f) ? f : 1;
 		if (argv[iter][1] == 'o') strcpy(output, argv[++iter]), o = 1; // -V755
 		++iter;
 	}
@@ -394,10 +395,10 @@ int main(int argc, char * argv[])
 		return e;
 	}
 
-
+	// There are very retarded filenames
 	j = 1;
 	files[0][0] = '.';
-	files[0][1] = 'a';
+	files[0][1] = 'a' - 1;
 	files[0][2] = 0;
 	for (i = 0; i < 4; ++i)
 	{
@@ -405,7 +406,7 @@ int main(int argc, char * argv[])
 		e = 1;
 		while (e)
 		{
-			if ((files[i][j])++ > 'z')
+			if ((++files[i][j]) > 'z')
 			{
 				if (j == 255)
 				{
@@ -454,14 +455,19 @@ int main(int argc, char * argv[])
 				while ((f = fgetc(tmp)) != EOF) putchar(f);
 				fclose(tmp);
 			}
+			remove(files[0]);
+			remove(files[1]);
+			remove(files[2]);
+			remove(files[3]);
 			printf("File number %d does not exist", i - iter + 1);
 			return 1;
 		}
 		fclose(tmp);
 		sortfile(argv[i], files[3], files[2], files[!e], f);
-		mergefiles(files[3], files[e], files[!e], f, 0);
+		mergefiles(files[e], files[3], files[!e], f, 0);
 		e = !e;
 	}
+	
 	if (o)
 	{
 		tmp = fopen(files[2], "w");
@@ -474,6 +480,10 @@ int main(int argc, char * argv[])
 		while ((f = fgetc(tmp)) != EOF) putchar(f);
 		fclose(tmp);
 	}
-	printf("%d files sorted successfully", i - iter + 1);
+	remove(files[0]);
+	remove(files[1]);
+	remove(files[2]);
+	remove(files[3]);
+	printf("%d file(s) sorted successfully", i - iter);
 	return 0;
 }
