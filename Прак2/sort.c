@@ -368,6 +368,20 @@ int main(int argc, char * argv[])
 	}
 	
 	
+	if (f == 2)
+	{
+		tmp = fopen(argv[iter], r)
+		if (!tmp)
+		{
+			printf("Check failed");
+			return 2;
+		}
+		fclose(tmp);
+		printf("Check file %s - result is %d", argv[iter], e = check(argv[iter]));
+		return e;
+	}
+	
+	
 	j = 1;
 	files[0][0] = '.';
 	files[0][1] = 'a';
