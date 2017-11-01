@@ -3,8 +3,13 @@
 // PVS-settings
 
 // PVS-settings end
+#define WINDEBUG
+
 #include<stdio.h>
 #include<string.h>
+#ifndef WINDEBUG
+#include<unistd.h>
+#endif
 
 #define M_IN(arg, l, r) ((arg) >= (l) && (arg) <= (r))
 #define M_SP(arg) ((arg) == ' ' || (arg) == '\r' || (arg) == '\t' || (arg) == '\n' || (arg) == '\f' || (arg) == '\v') 
@@ -216,6 +221,8 @@ int sortfile(const char * inp, const char * out, const char * tmp1, const char *
 		fclose(merge[1]);
 		if ((count - 1) >> iter == 1)
 			break;
+		
+		
 		output = fopen(out, "r");
 		merge[0] = fopen(tmp1, "w");
 		merge[1] = fopen(tmp2, "w");
@@ -309,6 +316,9 @@ int mergefiles(const char * in1, const char * in2, const char * out, int f, int 
 	}
 	free(str1);
 	free(str2);
+	fclose(input1);
+	fclose(input2);
+	fclose(output);
 	return 0;
 }
 
@@ -339,6 +349,104 @@ int check (const char * filename)
 
 int main(int argc, char * argv[])
 {
+	int iter, f, i, e, j, o;
+	char files[4][257];
+	char output[257];
+	FILE * tmp;
+	//---------------------------------------------
+	if (argc == 1) return 0;
+	*output = 0;
+	iter = 1;
+	f = 0;
+	while(*(argv[iter]) == '-')
+	{
+		if (argv[iter][1] == 'c') f = 2;
+		if (argv[iter][1] == 'n') f = 1;
+		if (argv[iter][1] == 'f') f = (f) ? f : -1;
+		if (argv[iter][1] == 'o') strcpy(output, argv[++iter]), o = 1;
+		++iter;
+	}
 	
 	
+	j = 1;
+	files[0][0] = '.';
+	files[0][1] = 'a';
+	files[0][2] = 0;
+	for(i = 0; i < 4; ++i)
+	{
+		if (i) strcpy(files[i], files[i - 1]);
+		e = 1;
+		while(e)
+		{
+			if((files[i][j])++ > 'z')
+			{
+				if (j == 255)
+				{
+					printf("WUTFACE 26 * 255 files here, cant work in this directory");
+					return 1;
+				}
+				for(e = 1; e <= j; ++e)
+					files[i][e] = 'a';
+				files[i][++j] = 'a';
+				files[i][j + 1] = 0;
+			}
+			#ifdef  WINDEBUG
+			e = 0;
+			#else
+			e = access(files[i], F_OK);
+			#endif
+		}
+	}
+	
+	
+	tmp = fopen(files[0], "w");
+	fclose(tmp);
+	tmp = fopen(files[1], "w");
+	fclose(tmp);
+	tmp = fopen(files[2], "w");
+	fclose(tmp);
+	tmp = fopen(files[3], "w");
+	fclose(tmp);
+	
+	
+	e = 0;
+	for(i = iter; i < argc; ++i)
+	{
+		tmp = fopen(argv[i], "r");
+		if (!tmp)
+		{
+			if (o)
+			{
+				tmp = fopen(files[2], "w");
+				fclose(tmp);
+				mergefiles(files[e], files[2], output, f, 1);
+			}
+			else
+			{
+				tmp = fopen(files[e]);
+				while((f = fgetc(tmp)) != EOF) putchar(f);
+				fclose(tmp);
+			}
+			printf("File number %d does not exist", i - iter + 1);
+			return 1;
+		}
+		fclose(tmp);
+		sortfile(argv[i], files[3], files[2], files[!e], f);
+		mergefiles(files[3], files[e], files[!e], f, 0);
+		e = !e;
+	}
+	if (o)
+	{
+		tmp = fopen(files[2], "w");
+		fclose(tmp);
+		mergefiles(files[e], files[2], output, f, 1);
+	}
+	else
+	{
+		tmp = fopen(files[e]);
+		while((f = fgetc(tmp)) != EOF) putchar(f);
+		fclose(tmp);
+	}
+	printf("%d files sorted successfully", i - iter + 1);
+	return 0;
 }
