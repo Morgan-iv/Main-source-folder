@@ -1,7 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // PVS-settings
-
+//V_RET_NOT_NULL, function:malloc
+//V_RET_NOT_NULL, function:realloc
 // PVS-settings end
 #define WINDEBUG
 
@@ -62,12 +63,12 @@ int strcmp(const char * str1, const char * str2, int f)
 			if (M_IN(str1[i], '0', '9') && M_IN(str2[j], '0', '9')) (f) ? 0 : (f = (str1[i] - str2[j])), ++f1, ++f2, ++i, ++j;
 			else return f1 += M_IN(str1[i], '0', '9'),
 						f2 += M_IN(str2[j], '0', '9'),
-						((n2 = f1 - f2) ? 0 : n2 = f),
+						(((n2 = f1 - f2)) ? 0 : n2 = f),
 						(n1 ? -n2 : n2);
 		}
 		return  f1 += M_IN(str1[i], '0', '9'),
 				f2 += M_IN(str2[j], '0', '9'),
-				((n2 = f1 - f2) ? 0 : n2 = f),
+				(((n2 = f1 - f2)) ? 0 : n2 = f),
 				(n1 ? -n2 : n2);
 	}
 	return 0;
@@ -78,7 +79,7 @@ char * mfgets(char ** str, uint * count, FILE * stream)
 	int ptr = 0;
 	*(*str) = 0;
 	while (fgets((*str) + ptr, *count + 1, stream) && strlen((*str) + ptr) == *count - ptr && (*str)[*count - 1] != '\n')
-		ptr = *count, *count <<= 1, (*str) = (char *) realloc((*str), *count + 1);
+		ptr = *count, *count <<= 1, (*str) = (char *) realloc((*str), *count + 1); //-V701
 	if (!(*(*str))) return NULL;
 	return (*str);
 }
@@ -103,12 +104,12 @@ int sortfile(const char * inp, const char * out, const char * tmp1, const char *
 
 	while (mfgets(&str1, &len, input))
 	{
-		fputs(str1, merge[count++ & 1]);
+		fputs(str1, merge[count++ & 1]); //-V575
 	}
 	fputc('\n', merge[!(count & 1)]);
 
 
-	fclose(input);
+	fclose(input); //-V575
 	fclose(merge[0]);
 	fclose(merge[1]);
 	merge[0] = fopen(tmp1, "r");
@@ -124,13 +125,13 @@ int sortfile(const char * inp, const char * out, const char * tmp1, const char *
 		{
 			for (i = 0, j = 0,
 				fgets(str1, len, merge[0]),
-				fgets(str2, len, merge[1]);
+				fgets(str2, len, merge[1]); //-V575
 				i < n && j < n;)
 			{
 				choose = strcmp(str1, str2, f);
 				if (choose < 0)
 				{
-					fputs(str1, output);
+					fputs(str1, output); //-V575
 					++i;
 					if (i < n) fgets(str1, len, merge[0]);
 				}
@@ -274,7 +275,7 @@ int mergefiles(const char * in1, const char * in2, const char * out, int f, int 
 		choose = strcmp(str1, str2, f);
 		if (choose < 0)
 		{
-			fputs(str1, output);
+			fputs(str1, output); //-V575
 			tmp1 = mfgets(&str1, &len1, input1);
 		}
 		else
@@ -317,8 +318,8 @@ int mergefiles(const char * in1, const char * in2, const char * out, int f, int 
 	}
 	free(str1);
 	free(str2);
-	fclose(input1);
-	fclose(input2);
+	fclose(input1); //-V575
+	fclose(input2); //-V575
 	fclose(output);
 	return 0;
 }
@@ -336,15 +337,26 @@ int check (const char * filename)
 	file = fopen(filename, "r");
 
 	tmp = mfgets(&str1, &len1, file);
-	if (!tmp) return 0;
+	if (!tmp)
+	{
+		free(str1);
+		free(str2);
+		return 0;
+	}
 
 	while (mfgets(&str2, &len2, file))
 	{
-		if (strcmp(str1, str2) > 0) return 1;
+		if (strcmp(str1, str2) > 0)
+		{
+			free(str1);
+			free(str2);
+			return 1;
+		}
 		tmp = str1, str1 = str2, str2 = tmp;
 		t = len1, len1 = len2, len2 = t;
 	}
-
+	free(str1);
+	free(str2);
 	return 0;
 }
 
@@ -364,7 +376,7 @@ int main(int argc, char * argv[])
 		if (argv[iter][1] == 'c') f = 2;
 		if (argv[iter][1] == 'n') f = 1;
 		if (argv[iter][1] == 'f') f = (f) ? f : -1;
-		if (argv[iter][1] == 'o') strcpy(output, argv[++iter]), o = 1;
+		if (argv[iter][1] == 'o') strcpy(output, argv[++iter]), o = 1; // -V755
 		++iter;
 	}
 
@@ -415,7 +427,7 @@ int main(int argc, char * argv[])
 
 
 	tmp = fopen(files[0], "w");
-	fclose(tmp);
+	fclose(tmp); //-V575
 	tmp = fopen(files[1], "w");
 	fclose(tmp);
 	tmp = fopen(files[2], "w");
