@@ -6,6 +6,10 @@
 // PVS-settings end
 #define WINDEBUG
 
+//fix filenames
+//fix native strcmp
+//fix -f strcmp 
+
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -40,8 +44,8 @@ int strcmp(const char * str1, const char * str2, int f)
 		while (str2[j] != 0 && M_SP(str2[j])) ++j;
 		i += n1 = str1[i] == '-';
 		j += n2 = str2[j] == '-';
-		while (str1[i] == '0') ++i;
-		while (str2[j] == '0') ++j;
+		while (str1[i] == '0' || M_SP(str1[i])) ++i;
+		while (str2[j] == '0' || M_SP(str2[j])) ++j;
 		f1 = M_IN(str1[i], '0', '9');
 		f2 = M_IN(str2[j], '0', '9');
 		if (!(f1 && f2)) return (n1 ? -f1 : f1) - (n2 ? -f2 : f2);
