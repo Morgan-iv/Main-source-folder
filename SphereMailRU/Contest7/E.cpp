@@ -43,7 +43,8 @@ struct DSU
 };
 
 vector<vector<pair<int, int> > > edges;
-int ans[1000001];
+//int ans[100001];
+vector<char> used;
 DSU sets;
 int cn, cs, cnt; //-V707
 
@@ -91,30 +92,49 @@ int binaryadd(int l, int r)
 	return 0;
 }
 
+int dfs(int v, int c)
+{
+	used[v] = true;
+	if (used[cs]) return 0;
+	for (int i = 0; i < edges[v].size(); ++i)
+		if (edges[v][i].second != c && !used[edges[v][i].first])
+			dfs(edges[v][i].first, c);
+	return 0;
+}
+
 int main()
 {
 	int n, m, k, a, b, c;
 	cin >> n >> m >> k;
-	edges.resize(k + 1);
+	//edges.resize(k + 1);
+	vector<int> ans;
+	edges.resize(n + 1);
 	cnt = 0;
-	for (int i = 0; i < n; ++i)
-		sets.make_set(i + 1);
+	/*for (int i = 0; i < n; ++i)
+		sets.make_set(i + 1);*/
 	for (int i = 0; i < m; ++i)
 	{
 		cin >> a >> b >> c;
-		if (c == 0) sets.union_sets(a, b);
-		else edges[c].push_back({ a, b });
+		edges[a].push_back({ b, c });
+		//if (c == 0) sets.union_sets(a, b);
+		//else edges[c].push_back({ a, b });
 	}
 	cin >> cn >> cs;
-	for (int i = 0; i < n; ++i)
-		sets.find_set(i + 1);
-	sets.st.resize(0);
-	sets.st.push_back({ 0, 0 });
-	binaryadd(1, k);
-	cout << cnt << endl;
-	for (int i = 0; i < n; ++i)
+	for (int i = 1; i <= k; ++i)
 	{
-		if (ans[i]) cout << i << ' ';
+		used.assign(n, 0);
+		dfs(cn, i);
+		if (used[cs]) ans.push_back(i);
+	}
+	/*for (int i = 0; i < n; ++i)
+		sets.find_set(i + 1);*/
+	//sets.st.resize(0);
+	//sets.st.push_back({ 0, 0 });
+	//binaryadd(1, k);
+	cout << ans.size() << endl;
+	for (int i = 0; i < ans.size(); ++i)
+	{
+		cout << ans[i] << ' ';
 	}
 	return 0;
 }

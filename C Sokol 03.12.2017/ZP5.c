@@ -10,13 +10,14 @@ double abs(double x)
 
 double findroot(double a, double b, double (*fun)(double))
 {
-	double m
+	double m;
 	while(b - a > EPS)
 	{
 		m = (a + b) / 2;
 		if ((*fun)(m) > 0) b = m;
 		else a = m;
 	}
+	return a;
 }
 
 double integrate(double a, double b, double (*fun)(double))
@@ -26,6 +27,7 @@ double integrate(double a, double b, double (*fun)(double))
 	n = 5;
 	h = (b - a) / n; 
 	res = 0;
+	s = 1;
 	while(abs(res - s) > EPS)
 	{
 		n *= 2;
@@ -39,7 +41,9 @@ double integrate(double a, double b, double (*fun)(double))
 		}
 		s += 0.5 * ((*fun)(a) + (*fun)(b));
 		s *= h;
+		res = s;
 	}
+	return s;
 }
 
 double f1(double x)
@@ -72,7 +76,7 @@ double f6(double x)
 	return 2 * x * x * x + 4 * x - 1;
 }
 
-double f1(double x)
+double f7(double x)
 {
 	return exp(-x) - 0.5 - sqrt(x);
 }
