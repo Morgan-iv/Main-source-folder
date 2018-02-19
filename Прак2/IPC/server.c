@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct message_
+typedef struct
 {
 	long mtype;
 	int data[2];
@@ -24,7 +24,7 @@ int main()
 {
 	key_t msgqk, smemk;
 	int msgqi, smemi, pid, num, count;
-	int i;
+	int i, t;
 	msg message;
 	
 	dup2(open("/dev/null", O_RDONLY), 0);
@@ -39,6 +39,7 @@ int main()
 	smemi = shmget(smemk, 1 << 16, 0666 | IPC_CREAT | IPC_EXCL);
 	shmpids = calloc(1 << 8, sizeof(int));
 	count = 0;
+	t = 0;
 	
 	while (1)
 	{

@@ -11,6 +11,7 @@ int main()
 	{
 		p[0] = 'a';
 		p[1] = '\0';
+		putc('k', stdout);
 	}
 	else
 		putc('z', stdout);

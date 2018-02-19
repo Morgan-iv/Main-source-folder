@@ -21,7 +21,7 @@ int main()
 		fflush(stdout);
 	}
 	a = 1;
-	p = NULL
+	p = NULL;
 	while (!p)
 	{
 		p = GetStr(&a);
