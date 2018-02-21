@@ -1,4 +1,6 @@
 import random
+import json
+import csv
 
 class Sdict(dict):
 	def iteritems(self):
@@ -15,13 +17,13 @@ class Sdict(dict):
 			if len(i) > m:
 				m = len(i)
 		return m
-	def pe(self, another):
+	def __iadd__(self, another):
 		for i in another.items():
 			self[i[0]] = i[1]
 		return self
 	def __add__(self, another):
 		ndict = Sdict(self)
-		ndict.pe(another)
+		ndict.__iadd__(another)
 		return ndict
 	def getkeysfrom(self, str):
 		res = []
@@ -29,7 +31,29 @@ class Sdict(dict):
 			if i.startswith(str):
 				res.append(i)
 		return res
-		
+	def updfromcsv(self, fname):
+		with open(fname) as fread:
+			for i, x in enumerate(csv.reader(fread)):
+				if len(x) == 2:
+					self[x[0]] = x[1]
+				else:
+					print ('string ' + str(i) + ' is invalid')
+	def getfromcsv(self, fname):
+		self.clear()
+		self.updfromcsv(fname)
+	def updfromjson(self, fname):
+		with open(fname) as fread:
+			self.update(json.load(fread))
+	def getfromjson(self, fname):
+		self.clear()
+		self.updfromjson(fname)
+	def to_json(self, fname):
+		with open(fname, 'w') as fwrite:
+			json.dump(self, fwrite)
+	def to_csv(self, fname):
+		with open(fname, 'w') as fwrite:
+			csv.writer(fwrite).writerows(self.items())
+
 a = {'a':1, 'b':2, 'cc':3}
 print(a)
 b = Sdict(a)
