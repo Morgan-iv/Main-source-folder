@@ -1,12 +1,12 @@
 import os
 import re
 
-def filelist(name = '', cdir = '.', level = 0):
-	if os.path.isdir(cdir):
-		print(cdir)
-		flist = os.listdir(cdir)
+def file_tree(file_filter = None, path = '.', level = 0):
+	if os.path.isdir(path):
+		print(path)
+		flist = os.listdir(path)
 		for i in flist:
-			filelist(name, cdir + '/' + i, level + 1)
-	elif re.match('.*' + name + '$', cdir):
-		print (cdir)
-filelist()
+			file_tree(file_filter, path + '/' + i, level + 1)
+	elif file_filter and re.match('.*' + file_filter + '$', path):
+		print (path)
+file_tree()
