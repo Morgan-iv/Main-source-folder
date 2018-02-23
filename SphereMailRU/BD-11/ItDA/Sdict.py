@@ -25,10 +25,10 @@ class Sdict(dict):
 		ndict = Sdict(self)
 		ndict.__iadd__(another)
 		return ndict
-	def getkeysfrom(self, str):
+	def getkeystartsfrom(self, s):
 		res = []
 		for i in self.keys():
-			if i.startswith(str):
+			if i.startswith(s):
 				res.append(i)
 		return res
 	def updfromcsv(self, fname):
@@ -53,7 +53,16 @@ class Sdict(dict):
 	def to_csv(self, fname):
 		with open(fname, 'w') as fwrite:
 			csv.writer(fwrite).writerows(self.items())
-
+	def __init__(self, fname):
+		if isinstance(fname, str):
+			super().__init__()
+			if fname.endswith('.csv'):
+				self.updfromcsv(fname)
+			if fname.endswith('.json'):
+				self.updfromjson(fname)
+		else:
+			super().__init__(fname)
+			
 a = {'a':1, 'b':2, 'cc':3}
 print(a)
 b = Sdict(a)
@@ -68,4 +77,4 @@ print(b.keymaxlen())
 m = b + c
 print(b)
 print(c)
-print(m.getkeysfrom('c'))
+print(m.getkeystartsfrom('c'))
