@@ -11,41 +11,40 @@ using System.IO;
 
 namespace TimetableK
 {
+    class Route
+    {
+        public int num;
+        public int starttime;
+        public int endtime;
+        public int interval;
+        public List<int> stations;
+        public Route(int n, int s, int e, int i, List<int> st)
+        {
+            num = n;
+            starttime = s;
+            endtime = e;
+            interval = i;
+            stations = st;
+        }
+    }
+    class Schedule : IComparable<Schedule>
+    {
+        public int num;
+        public int dest;
+        public int time;
+        public Schedule(int n, int d, int t)
+        {
+            num = n;
+            dest = d;
+            time = t;
+        }
+        public int CompareTo(Schedule another)
+        {
+            return this.time - another.time;
+        }
+    }
     class Program
     {
-        class Route
-        {
-            public int num;
-            public int starttime;
-            public int endtime;
-            public int interval;
-            public List<int> stations;
-            public Route(int n, int s, int e, int i, List<int> st)
-            {
-                num = n;
-                starttime = s;
-                endtime = e;
-                interval = i;
-                stations = st;
-            }
-        }
-        class Schedule : IComparable<Schedule>
-        {
-            public int num;
-            public int dest;
-            public int time;
-            public Schedule(int n, int d, int t)
-            {
-                num = n;
-                dest = d;
-                time = t;
-            }
-            public int CompareTo(Schedule another)
-            {
-                return this.time - another.time;
-            }
-        }
-
         static Dictionary<string, int> stkeyByName;
         static List<string> stnameByKey;
         static List<Dictionary<int, int>> stDist;
@@ -126,7 +125,7 @@ namespace TimetableK
         }
         static int GetData()
         {
-            StreamReader filestream = new StreamReader("routes.txt");
+            StreamReader filestream = new StreamReader( "../../routes.txt");
 
             stkeyByName = new Dictionary<string, int>();
             stnameByKey = new List<string>();
@@ -233,7 +232,7 @@ namespace TimetableK
                     Console.Write("Enter station: ");
                     continue;
                 }
-                Console.WriteLine("Current time: {0}:{1}", time.Hour, time.Minute);
+                Console.WriteLine("Current time: {0:00}:{1:00}", time.Hour, time.Minute);
                 Console.WriteLine("Schedule:");
                 var sch = GetScheduleBySt(stkeyByName[line], time);
                 foreach (var item in sch)
