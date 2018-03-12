@@ -1,0 +1,25 @@
+CC = g++
+TARGET = fcgi
+PDNAME = SAFEROAD
+.PHONY = clean all test
+compile_flags = -Wfatal-errors -std=c++17 -lfcgi -lpthread -lboost_regex -lcppdb 
+#compile_flags = -Wall -std=c++17 -lfcgi -lpthread -lboost_regex -lcppdb 
+
+$(TARGET): $(TARGET).cpp 
+	echo Building: $@
+	$(CC) $@.cpp $(compile_flags) -o $@
+
+clean:
+	[ -f $(TARGET) ] &&  rm $(TARGET)
+	[ -f $(TARGET)_test ] &&  rm $(TARGET)_test
+
+all: clean $(TARGET)
+	echo Doing stuff
+
+test: $(TARGET)_test
+	echo get right target
+
+$(TARGET)_test: $(TARGET)_test.cpp
+	echo Building: $@
+	$(CC) $@.cpp $(compile_flags) -D $(PDNAME)_TEST -o $@
+	

@@ -61,7 +61,7 @@ namespace ConstTexts
     static const char SQLConnect[] = 
     "odbc:Driver={ODBC Driver 13 for SQL Server};Server=tcp:saferoad-database.database.windows.net,1433;Database=Areas;Uid=morgan@saferoad-database;Pwd={SafeRoad-ARbfX4ZB6D};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;";
     static const char SQLQuery[] = 
-    "SELECT TOP 3 id, CAST(tstamp AS BIGINT) AS ts, coordx AS latitude, coordy AS longitude, radius FROM Areas WHERE tstamp > CAST(? AS ROWVERSION) ORDER BY ts";
+    "SELECT TOP 3 id, CAST(tstamp AS BIGINT) AS ts, coordx AS latitude, coordy AS longitude, radius, dp, dh FROM Areas WHERE tstamp > CAST(? AS ROWVERSION) ORDER BY ts";
     static const char SQLMaxTimestamp[] = 
     "SELECT CAST(MAX(tstamp) AS BIGINT) AS max FROM Areas";
     static const char SQLMaxID[] = 
@@ -76,7 +76,9 @@ namespace ConstTexts
         "lng",
         "rad",
         "tstampto",
-        "idmax"
+        "idmax",
+		"dp",
+		"dh"
     };
     static const std::string StrTimestamp("timestamp");
     static const std::string ExMapAt("map::at");
@@ -113,7 +115,7 @@ static void *doit(void *a)
     
     int id, count, idmax;
     long long tstamp, max, cur;
-    double lat, lng, rad;
+    double lat, lng, rad, dp, dh;
     
     cppdb::result res;
     cppdb::statement stat;
@@ -253,12 +255,14 @@ static void *doit(void *a)
         jsonvalue[0].SetArray();
         while (res.next())
         {
-            res >> id >> tstamp >> lat >> lng >> rad;
+            res >> id >> tstamp >> lat >> lng >> rad >> dp >> dh;
             jsonvalue[1].SetObject();
-            jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[3]), id, jsondocalloc);
+            jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[3]),  id, jsondocalloc);
             jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[4]), lat, jsondocalloc);
             jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[5]), lng, jsondocalloc);
             jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[6]), rad, jsondocalloc);
+			jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[9]),  dp, jsondocalloc);
+            jsonvalue[1].AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[10]), dh, jsondocalloc);
             jsonvalue[0].PushBack(jsonvalue[1], jsondocalloc);
         }
         jsondoc.AddMember(rapidjson::StringRef(ConstTexts::JSONKeys[2]), jsonvalue[0], jsondocalloc);
