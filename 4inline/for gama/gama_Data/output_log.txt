@@ -1,0 +1,25 @@
+Initialize engine version: 4.6.9f1 (44099fd26189)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GT 610  (ID=0x104a)
+    Vendor:   NVIDIA
+    VRAM:     2000 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.046 seconds
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+Platform assembly: M:\Программирование\Unity\4 in line\for gama\gama_Data\Managed\System.Core.dll (this message is harmless)

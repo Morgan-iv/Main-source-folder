@@ -1,0 +1,14 @@
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Assembly-CSharp.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Assembly-CSharp.pdb
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Assembly-UnityScript-firstpass.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\UnityEditor.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\UnityEngine.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\UnityEngine.UI.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Mono.Cecil.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\nunit.framework.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Unity.DataContract.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+M:\Программирование\Unity\4 in line\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
+M:\Программирование\Unity\4 in line\obj\Debug\Assembly-CSharp-vs.csprojResolveAssemblyReference.cache
+M:\Программирование\Unity\4 in line\obj\Debug\Assembly-CSharp.dll
+M:\Программирование\Unity\4 in line\obj\Debug\Assembly-CSharp.pdb
