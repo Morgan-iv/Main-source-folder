@@ -1,4 +1,0 @@
-M:\Программирование\Unity\4 in line\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
-D:\Unity\4 in line\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
-D:\Unity\4 in line\obj\Debug\Assembly-CSharp.dll
-D:\Unity\4 in line\obj\Debug\Assembly-CSharp.pdb
