@@ -3,16 +3,14 @@
 // PVS-settings
 // PVS-settings end
 
-//(old_top == initial_top (av) && old_size == 0) || ((unsigned long) (old_size) >= MINSIZE && prev_inuse (old_top) && ((unsigned long) old_end & (pagesize - 1)) == 0)
-
 #include<string>
 #include<iostream>
 #include<cstdlib>
 #include<cstring>
 
-typedef long long int64;
-typedef unsigned long long uint64;
-typedef unsigned int uint;
+typedef int64_t int64;
+typedef uint64_t uint64;
+typedef uint32_t uint;
 
 const uint base = 0x80000000; // = 2^31 = 2147483648 = MAX_INT + 1
 const uint basem1 = 0x7FFFFFFF; // = base - 1
@@ -258,6 +256,8 @@ public:
 		{
 			data_[size_++] = elem;
 			max_ = a;
+			memset(data_ + size_ * intsize, 0,
+				   (max_ - size_) * intsize);
 			return;
 		}
 		if (max_ + minblock != a)
@@ -266,6 +266,8 @@ public:
 		{
 			data_[size_++] = elem;
 			max_ += minblock;
+			memset(data_ + size_ * intsize, 0,
+				   (max_ - size_) * intsize);
 			return;
 		}
 		throw erralc;
@@ -323,8 +325,7 @@ public:
 	///</summary>
 	BigInt(int num = 0)
 	{
-		kdata_ = kektor(1);
-		kdata_[0] = num; //what about 0x80000000 ?
+		kdata_.push_back(num); //what about 0x80000000 ?
 		if (num == 0)
 			kdata_.pop_back();
 		if (num == 0x80000000)
@@ -334,6 +335,7 @@ public:
 		}
 	}
 
+	BigInt(int64 num) : BigInt(std::to_string(num)) { }
 	///<summary>
 	///constructor with copy/fill with zeros
 	///<para>size: size of mem needed</para>
@@ -357,7 +359,11 @@ public:
 	///<summary>
 	///copy operator =
 	///</summary>
-	BigInt & operator = (const BigInt & other) { kdata_ = other.kdata_; }
+	BigInt & operator = (const BigInt & other)
+	{
+		kdata_ = other.kdata_;
+		return *this;
+	}
 
 	///<summary>
 	///move operator =
@@ -370,7 +376,8 @@ public:
 
 	size_t size() const
 	{
-		while (kdata_.size() > 0 && kdata_.back() == 0) kdata_.pop_back();
+		while (kdata_.size() > 0 && kdata_.back() == 0)
+			kdata_.pop_back();
 		return (kdata_.size() > 0) ? kdata_.size() + kdata_.getsht() :
 									 kdata_.shift(0);
 	}
@@ -392,7 +399,7 @@ public:
 
 	BigInt abs () const
 	{
-		BigInt tmp = *this;
+		BigInt tmp(*this);
 		tmp.absinplace();
 		return tmp;
 	}
@@ -435,6 +442,7 @@ public:
 		{
 			if (rdiv) rdiv->kdata_ = std::move(BigInt(0).kdata_);
 			if (rmod) rmod->kdata_ = std::move(((sgn2) ? -dvd : dvd).kdata_);
+			return;
 		}
 
 		if (dvd > dvr && dvd < dvr * 2)
@@ -442,6 +450,7 @@ public:
 			if (rdiv) rdiv->kdata_ = std::move(((sgn1) ? -div1 : div1).kdata_);
 			if (rmod) rmod->kdata_ =
 				std::move(((sgn2) ? -(dvd - dvr) : (dvd - dvr)).kdata_);
+			return;
 		}
 
 		div1 *= 4;
@@ -462,7 +471,7 @@ public:
 			else div1 = m + 1;
 		}
 
-		div1 -= 1;
+		if (div1 * dvr > dvd) div1 -= 1;
 		div2 = dvd - div1 * dvr;
 
 		if (rdiv) rdiv->kdata_ = std::move(((sgn1) ? -div1 : div1).kdata_);
@@ -474,10 +483,8 @@ public:
 		size_t sz1 = this->size(), sz2 = other.size();
 		BigInt res(0);
 		BigInt t;
-		BigInt * his = const_cast<BigInt *>(this),
-			   * her = const_cast<BigInt *>(&other);
-		BigInt * tmp;
-		int sw = 0;
+		const BigInt * his = this, * her = &other;
+		const BigInt * tmp;
 		if (sz2 > sz1)
 		{
 			tmp = his; his = her; her = tmp;
@@ -637,9 +644,9 @@ public:
 	
 	BigInt operator - (const BigInt & other) const
 	{
-		BigInt tmp(*this);
+		BigInt tmp(other);
 		tmp.chsign();
-		return tmp += other;
+		return tmp += *this;
 	}
 
 	BigInt operator * (const BigInt & other) const
@@ -698,8 +705,8 @@ public:
 			return sgn1 ^ (sz1 < sz2);
 		--sz1;
 		while (sz1 > 0 && this->kdata_[sz1] == other.kdata_[sz1]) --sz1;
-		return (this->kdata_[sz1] != other.kdata_[sz1]) &&
-			(sgn1 ^ (this->kdata_[sz1]  < other.kdata_[sz1]));
+		return this->kdata_[sz1] != other.kdata_[sz1] &&
+			   this->kdata_[sz1]  < other.kdata_[sz1];
 	}
 
 	bool operator > (const BigInt & other) const
@@ -719,8 +726,8 @@ public:
 			return sgn1 ^ (sz1 > sz2);
 		--sz1;
 		while (sz1 > 0 && this->kdata_[sz1] == other.kdata_[sz1]) --sz1;
-		return (this->kdata_[sz1] != other.kdata_[sz1]) &&
-			(sgn1 ^ (this->kdata_[sz1]  > other.kdata_[sz1]));
+		return this->kdata_[sz1] != other.kdata_[sz1] &&
+			   this->kdata_[sz1]  > other.kdata_[sz1];
 	}
 
 	bool operator == (const BigInt & other) const
@@ -797,8 +804,144 @@ std::ostream & operator << (std::ostream & out, const BigInt & value)
 }
 
 
+#include <iostream>
+#include <limits>
+#include <sstream>
+
+//#include "bigint.h"
+
+std::string toString(const BigInt& value)
+{
+	std::stringstream buf;
+	buf << value;
+	return buf.str();
+}
+
+void check(int64_t x, int64_t y)
+{
+	const BigInt bigX = x;
+	const BigInt bigY = y;
+
+	if (bigX + bigY != BigInt(x + y))
+	{
+		std::cout << x << " + " << y << " != " << x + y << " got " << bigX + bigY << '\n';
+	}
+
+	if (bigX - bigY != BigInt(x - y))
+	{
+		std::cout << x << " - " << y << " != " << x - y << " got " << bigX - bigY << '\n';
+	}
+
+	if (bigX * bigY != BigInt(x * y))
+	{
+		std::cout << x << " * " << y << " != " << x * y << " got " << bigX * bigY << '\n';
+	}
+
+	if (x != 0 && y != 0)
+	{
+		if (bigX / bigY != BigInt(x / y))
+		{
+			std::cout << x << " / " << y << " != " << x / y << " got " << bigX / bigY << '\n';
+		}
+	}
+}
+
+void doCheckEqual(const BigInt& actual, const char* expected, size_t line)
+{
+	const auto str = toString(actual);
+	if (str != expected)
+	{
+		std::cout << "at line " << line << ": " << str << " != " << expected << '\n';
+	}
+}
+
+#define checkEqual(x, y) do { doCheckEqual((x), (y), __LINE__); } while(0)
+#define checkTrue(cond) do { if (!(cond)) std::cout << "at line " << __LINE__ << ": " << #cond << '\n'; } while(0)
+
 int main()
 {
-	std::cout << BigInt(10000) * BigInt(10000) * BigInt(10000) << std::endl;
-	//std::cout << sizeof(BigInt);
+	BigInt x = 3;
+	checkEqual(x, "3");
+	BigInt y = x;
+	checkEqual(y, "3");
+	BigInt z;
+	checkEqual(z, "0");
+
+	checkEqual(BigInt(-10), "-10");
+
+	checkTrue(x == y);
+	checkTrue(y == x);
+	checkTrue(x != z);
+	checkTrue(z != x);
+
+	z = y;
+	checkEqual(z, "3");
+
+	x = 100;
+	checkEqual(x, "100");
+
+	checkTrue(!(x < x));
+	checkTrue(x < 200);
+	checkTrue(BigInt(50) < x);
+	checkTrue(BigInt(-500) < x);
+	checkTrue(BigInt(-500) < BigInt(-200));
+
+	checkTrue(!(x > x));
+	checkTrue(BigInt(200) > x);
+	checkTrue(x > BigInt(50));
+	checkTrue(x > BigInt(-500));
+	checkTrue(BigInt(-200) > BigInt(-500));
+
+	checkTrue(x <= x);
+	checkTrue(x <= 200);
+	checkTrue(BigInt(50) <= x);
+	checkTrue(BigInt(-500) <= x);
+	checkTrue(BigInt(-500) <= BigInt(-200));
+
+	checkTrue(x >= x);
+	checkTrue(BigInt(200) >= x);
+	checkTrue(x >= BigInt(50));
+	checkTrue(x >= BigInt(-500));
+	checkTrue(BigInt(-200) >= BigInt(-500));
+	checkTrue(BigInt(0) == -BigInt(0));
+
+	checkEqual(BigInt(10) + BigInt(10), "20");
+	checkEqual(BigInt(-10) + BigInt(10), "0");
+	checkEqual(BigInt(10) + BigInt(-10), "0");
+	checkEqual(BigInt(-10) + BigInt(-10), "-20");
+
+	checkEqual(BigInt(10) - BigInt(10), "0");
+	checkEqual(BigInt(-10) - BigInt(10), "-20");
+	checkEqual(BigInt(10) - BigInt(-10), "20");
+	checkEqual(BigInt(-10) - BigInt(-10), "0");
+
+	checkEqual(BigInt(0) + BigInt(-1), "-1");
+	checkEqual(BigInt(0) - BigInt(1), "-1");
+
+	checkEqual(BigInt(100) - BigInt(100), "0");
+	checkEqual(BigInt(99) - BigInt(100), "-1");
+	checkEqual(BigInt(10) - BigInt(11), "-1");
+	checkEqual(BigInt(20) - BigInt(19), "1");
+
+	for (int i = -21; i <= 21; ++i)
+	{
+		for (int j = -21; j <= 21; ++j)
+		{
+			check(i, j);
+		}
+	}
+
+	const int64_t step = std::numeric_limits<uint32_t>::max() / 99;
+	const int64_t lower = std::numeric_limits<int32_t>::min() + step;
+	const int64_t upper = std::numeric_limits<int32_t>::max() - step;
+
+	for (int64_t i = lower; i < upper; i += step)
+	{
+		for (int64_t j = -99; j < 99; ++j)
+		{
+			check(i, j);
+		}
+	}
+
+	return 0;
 }
