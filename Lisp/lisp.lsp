@@ -1,4 +1,4 @@
-(DEFUN Abbs (LAMBDA (x)
+(DEFUN Abbs (x)
    (COND ((< x 0 )(- x))
-      (T  x))))
-(Abbs -3)
+      (T  x)))
+(print (Abbs -3))
