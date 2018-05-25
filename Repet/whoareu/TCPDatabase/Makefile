@@ -2,7 +2,7 @@ CC = g++-4.8
 TARGET = both
 PDNAME = DATABASE
 .PHONY = clean all test
-compile_flags = -Wall -std=c++11 -lboost_regex -pthread -g -D MYAPP_VERSION_1
+compile_flags = -Wall -std=c++11 -lboost_regex -pthread -g -D MYAPP_VERSION_2
 
 
 $(TARGET): server client 

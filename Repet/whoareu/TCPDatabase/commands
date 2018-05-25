@@ -1,0 +1,8 @@
+nochar
+select
+insert author=[33] year=[33] number=[336] journal=[h33] article=[33s]
+insert author=[34] year=[33] number=[336] journal=[h33] article=[33s]
+insert author=[35] year=[33] number=[336] journal=[h33] article=[33s]
+remove ID=[3]
+update ID=[1] author=[ccccc]
+select
