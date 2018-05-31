@@ -5,39 +5,39 @@
 
 struct record_t
 {
-	static const size_t maxjolen = 64;
 	static const size_t maxaulen = 32;
+	static const size_t maxjolen = 64;
 	static const size_t maxarlen = 128;
 
 	uint64_t ID;
-	char journal[maxjolen];
+	char author[maxaulen];
 	int32_t year;
 	int32_t number;
-	char author[maxaulen];
+	char journal[maxjolen];
 	char article[maxarlen];
 
 	record_t()
 	{
 		ID = 0;
-		journal[0] = '\0';
+		author[0] = '\0';
 		year = 0;
 		number = 0;
-		author[0] = '\0';
+		journal[0] = '\0';
 		article[0] = '\0';
 	}
 
-	record_t(uint64_t id, const char * jo, int32_t y, int32_t n, const char * au, const char * ar) :
+	record_t(uint64_t id, const char * au, int32_t y, int32_t n, const char * jo, const char * ar) :
 		ID(id), year(y), number(n)
 	{
 		size_t size;
-		size = strlen(jo) + 1;
-		if (size > maxjolen)
-			size = maxjolen;
-		std::copy(jo, jo + size, journal);
 		size = strlen(au) + 1;
 		if (size > maxaulen)
 			size = maxaulen;
 		std::copy(au, au + size, author);
+		size = strlen(jo) + 1;
+		if (size > maxjolen)
+			size = maxjolen;
+		std::copy(jo, jo + size, journal);
 		size = strlen(ar) + 1;
 		if (size > maxarlen)
 			size = maxarlen;
@@ -75,7 +75,7 @@ uint64_t swapbytes(uint64_t a)
 	return a;
 }
 
-int sendall(int s, const char *buf, int len, int flags)   //
+int sendall(int s, const char *buf, int len, int flags)
 {
     int total = 0;
     int n;

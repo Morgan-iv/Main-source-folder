@@ -8,11 +8,11 @@ compile_flags = -Wall -std=c++11 -lboost_regex -pthread -g -D MYAPP_VERSION_2
 $(TARGET): server client 
 	echo Both are built
 
-server: server.cpp
+server: server.cpp mydb.h
 	echo Building: $@
 	$(CC) $@.cpp -o $@ $(compile_flags)
 
-client: client.cpp
+client: client.cpp mydb.h
 	echo Building: $@
 	$(CC) $@.cpp -o $@ $(compile_flags)
 
@@ -31,4 +31,4 @@ clean:
 	[ -f test2 ] &&  rm test2
 
 all: clean $(TARGET)
-	echo Doing stuff	
+	echo Doing stuff
