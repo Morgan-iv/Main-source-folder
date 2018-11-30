@@ -11,8 +11,10 @@ class Component;
 
 typedef std::vector<Point>::iterator PointIt;
 typedef std::vector<Component>::iterator ComponentIt;
+typedef unsigned int uint;
 
 const double eps = 1e-9;
+#define nullptr NULL /*if c++ < c++11*/
 
 enum
 {
@@ -64,7 +66,7 @@ public:
     Component(const Point * pts, size_t length)
     {
         points.resize(length);
-        for (int i = 0; i < length; ++i)
+        for (uint i = 0; i < length; ++i)
         {
             points[i] = pts[i];
         }
@@ -72,7 +74,7 @@ public:
     Component(const double * pts, size_t length)
     {
         points.resize(length);
-        for (int i = 0; i < length; ++i)
+        for (uint i = 0; i < length; ++i)
         {
             points[i].x = pts[i * 2];
             points[i].y = pts[i * 2 + 1];
@@ -170,6 +172,7 @@ struct AST
         left = (other.left) ? new AST(*other.left) : nullptr;
         right = (other.right) ? new AST(*other.right) : nullptr;
     }
+    /*
     AST(AST && other)
     {
         Op = other.Op;
@@ -181,6 +184,7 @@ struct AST
         other.left = nullptr;
         other.right = nullptr;
     }
+    */
     AST & operator = (const AST & other)
     {
         Op = other.Op;
@@ -191,6 +195,7 @@ struct AST
         right = new AST(*other.right);
         return *this;
     }
+    /*
     AST & operator = (AST && other)
     {
         Op = other.Op;
@@ -205,6 +210,7 @@ struct AST
         other.right = nullptr;
         return *this;
     }
+    */
     ~AST()
     {
         delete left;
@@ -292,12 +298,14 @@ public:
         comps = other.comps;
         tree = new AST(*other.tree);
     }
+    /*
     Polygon(Polygon && other)
     {
         comps.swap(other.comps);
         tree = other.tree;
         other.tree = nullptr;
     }
+    */
     Polygon & operator = (const Polygon & other)
     {
         comps = other.comps;
@@ -305,6 +313,7 @@ public:
         tree = new AST(*other.tree);
         return *this;
     }
+    /*
     Polygon & operator = (Polygon && other)
     {
         comps.swap(other.comps);
@@ -313,6 +322,7 @@ public:
         other.tree = nullptr;
         return *this;
     }
+    */
     ~Polygon()
     {
         delete tree;
