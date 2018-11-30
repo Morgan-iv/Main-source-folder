@@ -1,4 +1,4 @@
-#version 330 core
+#version 410 core
 
 in vec2 TexCoord;
 in vec4 ourColor;
@@ -7,7 +7,6 @@ out vec4 color;
 
 uniform sampler2D ourTexture1;
 uniform sampler2D ourTexture2;
-uniform float mixratio;
 
 void main()
 {
