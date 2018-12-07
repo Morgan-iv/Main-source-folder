@@ -213,23 +213,70 @@ int main(int argc, const char *argv[])
     GLint fobjViewLoc = fobj.GetProg().GetLoc("view");
     GLint fobjProjLoc = fobj.GetProg().GetLoc("projection");
     GLint viewPosLoc  = fobj.GetProg().GetLoc("viewPos");
-    GLint lightPosLoc = fobj.GetProg().GetLoc("light.position");
-    GLint lightDirLoc = fobj.GetProg().GetLoc("light.direction");
+    GLint lightPosLoc = fobj.GetProg().GetLoc("spotLight.position");
+    GLint lightDirLoc = fobj.GetProg().GetLoc("spotLight.direction");
+
+    glm::vec3 pointLightPositions[] =
+    {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
 
     fobj.GetProg().SetUVec3f("material.ambient",  1.0f, 0.5f, 0.31f);
     fobj.GetProg().SetUVec3f("material.diffuse",  1.0f, 0.5f, 0.31f);
     fobj.GetProg().SetUVec3f("material.specular", 0.5f, 0.5f, 0.5f);
     fobj.GetProg().SetUVec1f("material.shininess", 32.0f);
-    //fobj.GetProg().SetUVec3f("light.direction", -0.2f, -1.0f, -0.3f);
-    fobj.GetProg().SetUVec3f("light.ambient",   0.1f, 0.1f, 0.1f);
-    fobj.GetProg().SetUVec3f("light.diffuse",   0.5f, 0.5f, 0.5f); // darken the light a bit to fit the scene
-    fobj.GetProg().SetUVec3f("light.specular",  1.0f, 1.0f, 1.0f);
 
-    fobj.GetProg().SetUVec1f("light.cutOff",      glm::cos(glm::radians(12.5f)));
-    fobj.GetProg().SetUVec1f("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-    fobj.GetProg().SetUVec1f("light.constant",    1.0f);
-    fobj.GetProg().SetUVec1f("light.linear",      0.09f);
-    fobj.GetProg().SetUVec1f("light.quadratic",   0.032f);
+    fobj.GetProg().SetUVec3f("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    fobj.GetProg().SetUVec3f("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    fobj.GetProg().SetUVec3f("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    fobj.GetProg().SetUVec3f("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+    // point light 1
+    fobj.GetProg().SetUVec3f("pointLights[0].position", pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z);
+    fobj.GetProg().SetUVec3f("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+    fobj.GetProg().SetUVec3f("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+    fobj.GetProg().SetUVec3f("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[0].constant", 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[0].linear", 0.09);
+    fobj.GetProg().SetUVec1f("pointLights[0].quadratic", 0.032);
+    // point light 2
+    fobj.GetProg().SetUVec3f("pointLights[1].position", pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z);
+    fobj.GetProg().SetUVec3f("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+    fobj.GetProg().SetUVec3f("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+    fobj.GetProg().SetUVec3f("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[1].constant", 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[1].linear", 0.09);
+    fobj.GetProg().SetUVec1f("pointLights[1].quadratic", 0.032);
+    // point light 3
+    fobj.GetProg().SetUVec3f("pointLights[2].position", pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
+    fobj.GetProg().SetUVec3f("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+    fobj.GetProg().SetUVec3f("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+    fobj.GetProg().SetUVec3f("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[2].constant", 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[2].linear", 0.09);
+    fobj.GetProg().SetUVec1f("pointLights[2].quadratic", 0.032);
+    // point light 4
+    fobj.GetProg().SetUVec3f("pointLights[3].position", pointLightPositions[3].x, pointLightPositions[3].y, pointLightPositions[3].z);
+    fobj.GetProg().SetUVec3f("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+    fobj.GetProg().SetUVec3f("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+    fobj.GetProg().SetUVec3f("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[3].constant", 1.0f);
+    fobj.GetProg().SetUVec1f("pointLights[3].linear", 0.09);
+    fobj.GetProg().SetUVec1f("pointLights[3].quadratic", 0.032);
+
+
+
+    fobj.GetProg().SetUVec3f("spotLight.ambient",   0.1f, 0.1f, 0.1f);
+    fobj.GetProg().SetUVec3f("spotLight.diffuse",   0.5f, 0.5f, 0.5f); // darken the light a bit to fit the scene
+    fobj.GetProg().SetUVec3f("spotLight.specular",  1.0f, 1.0f, 1.0f);
+    fobj.GetProg().SetUVec1f("spotLight.cutOff",      glm::cos(glm::radians(12.5f)));
+    fobj.GetProg().SetUVec1f("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+    fobj.GetProg().SetUVec1f("spotLight.constant",    1.0f);
+    fobj.GetProg().SetUVec1f("spotLight.linear",      0.09f);
+    fobj.GetProg().SetUVec1f("spotLight.quadratic",   0.032f);
 
     glm::vec3 cubePositions[] =
     {
@@ -244,6 +291,14 @@ int main(int argc, const char *argv[])
         glm::vec3( 1.5f,  0.2f, -1.5f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
+
+    GameObject lights[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        lights[i] = lightSource;
+        lights[i].position = pointLightPositions[i];
+        lights[i].Transform();
+    }
 
     GameObject visual[10];
     for (int i = 0; i < 10; ++i)
@@ -298,7 +353,12 @@ int main(int argc, const char *argv[])
         glProgramUniformMatrix4fv(lightSource.GetProg(), lightViewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glProgramUniformMatrix4fv(lightSource.GetProg(), lightProjLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        lightSource.Draw(false);
+        for (int i = 0; i < 4; ++i)
+        {
+            lights[i].Draw();
+        }
+
+        //lightSource.Draw(false);
 
         for (int i = 0; i < 10; ++i)
         {
