@@ -14,7 +14,7 @@ typedef std::vector<Component>::iterator ComponentIt;
 typedef unsigned int uint;
 
 const double eps = 1e-9;
-#define nullptr NULL /*if c++ < c++11*/
+//#define nullptr NULL /*if c++ < c++11*/
 
 enum
 {
@@ -330,7 +330,8 @@ public:
 
     int CheckPoint (Point point) const
     {
-        return RunTree(tree, point);
+        if (tree != nullptr)
+            return RunTree(tree, point);
     }
 
     ComponentIt begin()
@@ -355,6 +356,10 @@ public:
 
 Polygon operator && (const Polygon & a, const Polygon & b)
 {
+    if (a.tree == nullptr)
+        return a;
+    if (b.tree == nullptr)
+        return b;
     Polygon res;
     res.comps = a.comps;
     res.comps.insert(res.comps.end(), b.comps.begin(), b.comps.end());
@@ -364,6 +369,10 @@ Polygon operator && (const Polygon & a, const Polygon & b)
 }
 Polygon operator || (const Polygon & a, const Polygon & b)
 {
+    if (a.tree == nullptr)
+        return b;
+    if (b.tree == nullptr)
+        return a;
     Polygon res;
     res.comps = a.comps;
     res.comps.insert(res.comps.end(), b.comps.begin(), b.comps.end());
