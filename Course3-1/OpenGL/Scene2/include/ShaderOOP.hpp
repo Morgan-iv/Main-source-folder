@@ -18,7 +18,6 @@ public:
     mutable uint state;
     Shader(const char * path = nullptr, GLenum shader_type = GL_VERTEX_SHADER)
     {
-
         this->ID = 0;
         this->type = shader_type;
         if (path == nullptr)
@@ -56,10 +55,11 @@ public:
         glGetShaderiv(this->ID, GL_COMPILE_STATUS, &success);
         if(!success)
         {
+            std::cout << "TYPE: " << shader_type << std::endl;
             this->state = 1;
             GLchar infoLog[512];
             glGetShaderInfoLog(this->ID, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
         };
         if (this->state != 0)
             this->Destroy();
@@ -87,7 +87,7 @@ public:
         this->ID = 0;
         this->state = 0;
     }
-    Program(const char * vspath, const char * fspath)
+    Program(const char * vspath, const char * fspath, const char* gspath = nullptr)
     {
         this->ID = 0;
         this->state = 0;
@@ -106,14 +106,29 @@ public:
             vs.Destroy();
             return;
         }
+        Shader gs = Shader(gspath, GL_GEOMETRY_SHADER);
+        if (gspath != nullptr && gs.state != 0)
+        {
+            std::cout << "ERROR::SHADER::PROGRAM::GSHADER_IS_INVALID" << std::endl;
+            this->state = 5;
+            vs.Destroy();
+            fs.Destroy();
+            return;
+        }
         this->Create();
         this->Attach(vs);
         this->Attach(fs);
+        if (gspath != nullptr)
+            this->Attach(gs);
         this->Link();
         this->Detach(vs);
         this->Detach(fs);
+        if (gspath != nullptr)
+            this->Detach(gs);
         vs.Destroy();
         fs.Destroy();
+        if (gspath != nullptr)
+            gs.Destroy();
     }
     void Create()
     {

@@ -13,8 +13,6 @@
 
 #include "ShaderOOP.hpp"
 
-#define GLvoid void  /*But Why???*/
-
 typedef unsigned int uint;
 
 class GameObject
@@ -62,8 +60,7 @@ public:
     scale(1.0f, 1.0f, 1.0f), rotation(0.0f, 0.0f, 1.0f, 0.0f),
     position(0.0f, 0.0f, 0.0f) { }
 
-    GameObject(const char * vcpath, const char * vspath,
-               const char * fspath) : GameObject()
+    GameObject (const char * vcpath) : GameObject()
     {
         std::ifstream file;
         GLuint attrcount, vertcount, indcount;
@@ -126,6 +123,11 @@ public:
         delete[] verts;
         delete[] inds;
         vcount = indcount;
+    }
+
+    GameObject(const char * vcpath, const char * vspath,
+               const char * fspath) : GameObject(vcpath)
+    {
         this->program = Program(vspath, fspath);
 
         if (this->program.state != 0)

@@ -2,16 +2,16 @@ CC = g++
 CFLAGS = -g -std=c++11 $(OPTIMIZE) -lGLEW -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -lSOIL
 SOURCES = main.cpp orig.cpp
 EXECS = main.bin orig.bin
-LIBS = GameObjectOOP.hpp ShaderOOP.hpp
+#LIBS = GameObjectOOP.hpp ShaderOOP.hpp
 BREAKPOINTS = 
 OPTIMIZE = 
 
-all: clean $(SOURCES) $(LIBS) $(EXECS)
+all: clean $(SOURCES) $(EXECS) #$(LIBS)
 
-main.bin: main.cpp $(LIBS)
+main.bin: main.cpp #$(LIBS)
 	$(CC) $< -o $@ $(BREAKPOINTS) $(CFLAGS)
 
-orig.bin: orig.cpp $(LIBS)
+orig.bin: orig.cpp #$(LIBS)
 	$(CC) $< -o $@ $(BREAKPOINTS) $(CFLAGS)
 
 clean:
