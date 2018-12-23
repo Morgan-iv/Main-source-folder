@@ -1,6 +1,7 @@
 // GLEW нужно подключать до GLFW.
 // GLEW
 #define GLEW_STATIC
+#define STB_IMAGE_IMPLEMENTATION
 #include <GL/glew.h>
 // GLFW
 #include <GLFW/glfw3.h>
@@ -193,9 +194,6 @@ void moveup1(void)
     std::cout << "\e[1F";
 }
 
-
-
-
 int main(int argc, char const *argv[])
 {
     GLFWwindow * window = myGLinit();
@@ -307,6 +305,8 @@ int main(int argc, char const *argv[])
 
     fobj.GetProg().SetUVec1f("far_plane", far_plane);
     
+
+
 
 
 
