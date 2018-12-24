@@ -3,3 +3,4 @@ TelegramBot/MainBot/bot_token.py
 *.jpg
 *.png
 *.bin
+*.zip
