@@ -51,6 +51,7 @@ void main()
     }
     color /= samples;
     
+    //vec3 color = texture(skybox, R).rgb;
 	vec3 result = CalcPointLight(pointLights, norm, Position, viewDir, color); 
 	FragColor = vec4(result, 1.0);
 } 

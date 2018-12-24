@@ -325,6 +325,9 @@ int main(int argc, char const *argv[])
     int FramesCount = 0;
     int lastSecond = -1;
 
+    if (argc > 1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     while(!glfwWindowShouldClose(window))
     {
         ++FramesCount;
