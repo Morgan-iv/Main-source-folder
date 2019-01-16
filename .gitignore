@@ -1,5 +1,8 @@
 TelegramBot/MainBot/bot_token.py
 
+*/obj/*
+*/bin/*
+
 *.jpg
 *.png
 *.bin
