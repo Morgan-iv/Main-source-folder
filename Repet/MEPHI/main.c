@@ -3,6 +3,7 @@
 
 int main(int argc, char const *argv[])
 {
+    /*
     TYPE ** arr1;
     TYPE ** arr2;
     int i, j;
@@ -12,7 +13,7 @@ int main(int argc, char const *argv[])
     matrix_t mat1;
     matrix_t mat2;
     matrix_t mat3;
-
+    */
 
     //f = fopen("ind.txt", "r");
     f = stdin;

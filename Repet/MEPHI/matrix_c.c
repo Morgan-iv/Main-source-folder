@@ -1,42 +1,24 @@
-//#include <stdlib.h>
-//#include <stdio.h>
+# 1 "matrix.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 1 "<command-line>" 2
+# 1 "matrix.c"
+
+
 
 typedef struct complex
 {
     double re, im;
 } complex_t;
-
-#if !defined(USE_DOUBLE) && !defined(USE_COMPLEX)
-#define USE_DOUBLE
-#endif
-
-#ifdef USE_DOUBLE
-#undef USE_COMPLEX
-#define TYPE double
-#define PLUS(a, b) ((a) + (b)) 
-#define MULT(a, b) ((a) * (b))
-#define PRINT(a) printf("%9.3f ", (a))
-#define FSCAN(f, a) fscanf(f, "%lf", &(a))
-#define ZERO 0
-#endif
-
-#ifdef USE_COMPLEX
-#undef USE_DOUBLE
-#define TYPE complex_t
-#define PLUS(a, b) ((complex_t) {(a).re + (b).re, (a).im + (b).im})
-#define MULT(a, b) ((complex_t) {(a).re * (b).re - (a).im * (b).im, (a).re * (b).im + (a).im * (b).re})
-#define PRINT(a) printf("(%9.3f, %9.3f) ", (a).re, (a).im)
-#define FSCAN(f, a) fscanf(f, " (%lf, %lf) ", &((a).re), &((a).im))
-#define ZERO ((complex_t) {0, 0})
-#endif
-
+# 33 "matrix.c"
 typedef struct matrix
 {
     int n, m;
-    TYPE ** data;
+    complex_t ** data;
 } matrix_t;
 
-matrix_t create_matrix(int n, int m, TYPE ** data)
+matrix_t create_matrix(int n, int m, complex_t ** data)
 {
     matrix_t res;
     int i, j;
@@ -48,10 +30,10 @@ matrix_t create_matrix(int n, int m, TYPE ** data)
     if (n <= 0 || m <= 0)
         return res;
 
-    res.data = malloc(n * sizeof(TYPE *));
+    res.data = malloc(n * sizeof(complex_t *));
     for (i = 0; i < n; ++i)
     {
-        res.data[i] = malloc(m * sizeof(TYPE));
+        res.data[i] = malloc(m * sizeof(complex_t));
     }
 
     if (data == NULL)
@@ -101,7 +83,7 @@ matrix_t mat_plus(matrix_t a, matrix_t b)
     {
         for (j = 0; j < res.m; ++j)
         {
-            res.data[i][j] = PLUS(a.data[i][j], b.data[i][j]);
+            res.data[i][j] = ((complex_t) {(a.data[i][j]).re + (b.data[i][j]).re, (a.data[i][j]).im + (b.data[i][j]).im});
         }
     }
 
@@ -112,7 +94,7 @@ matrix_t mat_mult(matrix_t a, matrix_t b)
 {
     matrix_t res;
     int i, j, k;
-    /*TYPE tmp;*/
+
 
     if (a.n <= 0 || a.m <= 0 || b.n <= 0 || a.m <= 0)
         return create_matrix(0, 0, NULL);
@@ -129,10 +111,10 @@ matrix_t mat_mult(matrix_t a, matrix_t b)
     {
         for (j = 0; j < res.m; ++j)
         {
-            res.data[i][j] = ZERO;
+            res.data[i][j] = ((complex_t) {0, 0});
             for (k = 0; k < a.m; ++k)
             {
-                res.data[i][j] = PLUS(res.data[i][j], MULT(a.data[i][k], b.data[k][j]));
+                res.data[i][j] = ((complex_t) {(res.data[i][j]).re + (((complex_t) {(a.data[i][k]).re * (b.data[k][j]).re - (a.data[i][k]).im * (b.data[k][j]).im, (a.data[i][k]).re * (b.data[k][j]).im + (a.data[i][k]).im * (b.data[k][j]).re})).re, (res.data[i][j]).im + (((complex_t) {(a.data[i][k]).re * (b.data[k][j]).re - (a.data[i][k]).im * (b.data[k][j]).im, (a.data[i][k]).re * (b.data[k][j]).im + (a.data[i][k]).im * (b.data[k][j]).re})).im});
             }
         }
     }
@@ -185,11 +167,8 @@ void mat_print(matrix_t mat)
     {
         for (j = 0; j < mat.m; ++j)
         {
-            PRINT(mat.data[i][j]);
+            printf("(%9.3f, %9.3f) ", (mat.data[i][j]).re, (mat.data[i][j]).im);
         }
         printf("\n");
     }
 }
-
-
-
