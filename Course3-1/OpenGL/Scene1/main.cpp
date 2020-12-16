@@ -94,6 +94,10 @@ int main(int argc, char const *argv[])
 {
     std::cout << std::endl;
 
+#ifdef MYDEBUG_BREAK
+    __asm__ __volatile__("int3");
+#endif //MYDEBUG_BREAK
+
     GLFWwindow* window = myGLinit();
 
     // build and compile shaders
